@@ -1,5 +1,5 @@
-#Goodat
+# Goodat
 
-#TODO
-*Make an address Model (rue, numero, code_postal, ville)
+# TODO
+* Make an address Model (rue, numero, code_postal, ville)
  
