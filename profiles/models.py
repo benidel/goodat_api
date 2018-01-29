@@ -8,9 +8,9 @@ User = get_user_model()
 
 class Profile(TimestampedModel):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	skills = models.ManyToManyField('ProfileSkill')
-	degrees = models.ManyToManyField('Degree')
-	profession = models.CharField(max_length=150)
+	skills = models.ManyToManyField('ProfileSkill', blank=True)
+	degrees = models.ManyToManyField('Degree', blank=True)
+	profession = models.CharField(max_length=150, null=True, blank=True)
 
 	@property
 	def full_name(self):

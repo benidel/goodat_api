@@ -4,6 +4,12 @@ from rest_framework import serializers
 
 from core.utils import TokenGenerator
 
+from profiles.serializers import (
+	ProfileSerializer,
+	DegreeSerializer,
+	ProfileSkillSerializer
+)
+
 from .models import User
 
 
@@ -65,6 +71,10 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+	profile = ProfileSerializer(write_only=True)
+	
+	skills = ProfileSkillSerializer(source='profile.skills', many=True)
+
 	password = serializers.CharField(
 		max_length=128,
 		min_length=8,
@@ -75,7 +85,7 @@ class UserSerializer(serializers.ModelSerializer):
 		model = User
 		fields = (
 			'password', 'first_name', 'last_name', 
-			'bio', 'avatar', 'gsm',
+			'bio', 'avatar', 'gsm', 'skills', 'profile'
 		)
 
 	def update(self, instance, validated_data):
@@ -86,6 +96,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 		if password is not None:
 			instance.set_password(password)
+
+		profile_data = validated_data.pop('profile')
+		
 
 		instance.save()
 
