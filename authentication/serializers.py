@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
@@ -9,6 +10,7 @@ from profiles.serializers import (
 	DegreeSerializer,
 	ProfileSkillSerializer
 )
+from profiles.models import Skill, ProfileSkill
 
 from .models import User
 
@@ -91,15 +93,38 @@ class UserSerializer(serializers.ModelSerializer):
 	def update(self, instance, validated_data):
 		password = validated_data.pop('password', None)
 
+		profile_data = validated_data.pop('profile', {})
+
 		for key, value in validated_data.items():
 			setattr(instance, key, value)
 
 		if password is not None:
 			instance.set_password(password)
-
-		profile_data = validated_data.pop('profile')
 		
+		# skills indicate the profile skills
+		profile_skills_data = profile_data.pop('skills', [])
 
+		for key, value in profile_data.items():
+			setattr(instance.profile, key, value)
+
+		instance_skills = instance.profile.skills
+		for profile_skill in profile_skills_data:
+			skill = profile_skill.get('skill')
+			if skill:
+				try:
+					instance_skill = instance_skills.get(skill=skill)
+					level = profile_skill.get('level')
+					if level:
+						instance_skill.level = level
+						instance_skill.save()
+				except ProfileSkill.DoesNotExist:
+					p_s = ProfileSkill(
+						level=profile_skill.get('level'),
+						skill=profile_skill.get('skill')
+					)
+					p_s.save()
+					instance_skills.add(p_s)
+		instance.profile.save()
 		instance.save()
 
 		return instance

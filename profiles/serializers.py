@@ -11,7 +11,8 @@ from .models import (
 class SkillSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Skill
-		fields = ('name', )
+		fields = ('pk', 'name', )
+		read_only_fields = ('pk', )
 
 
 class DegreeSerializer(serializers.ModelSerializer):
@@ -21,14 +22,20 @@ class DegreeSerializer(serializers.ModelSerializer):
 
 
 class ProfileSkillSerializer(serializers.ModelSerializer):
-	skill = SkillSerializer()
+	skill = SkillSerializer(read_only=True)
+	skill_pk = serializers.PrimaryKeyRelatedField(
+		source="skill",
+		queryset=Skill.objects.all(),
+		write_only=True
+	)
 
 	class Meta:
 		model = ProfileSkill
-		fields = ('skill', 'level')
+		fields = ('skill', 'level', 'skill_pk')
+
 
 class ProfileSerializer(serializers.ModelSerializer):
-	skills = SkillSerializer(many=True)
+	skills = ProfileSkillSerializer(many=True)
 	degrees = DegreeSerializer(many=True)
 
 	class Meta:

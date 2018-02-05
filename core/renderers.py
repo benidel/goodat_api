@@ -14,5 +14,19 @@ class CoreJSONRenderer(JSONRenderer):
 			return super(CoreJSONRenderer, self).render(data)
 
 		return json.dumps({
-			self.object_label: data
+			"data": {
+				self.object_label: data
+			}
 		})
+
+# {
+# 	data:{
+# 		....
+# 	},
+# 	error:{
+# 		....
+# 	},
+# 	error_msg:{
+# 		....
+# 	}
+# }
