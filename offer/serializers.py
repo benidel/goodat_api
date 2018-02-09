@@ -30,14 +30,11 @@ class OfferSerializer(serializers.ModelSerializer):
 
 	def update(self, instance, validated_data):
 		print("DD", validated_data)
-		required_skills_data = validated_data.pop("required_skills", [])
-		for elem in validated_data:
-			if instance._meta.get_field(elem):
-				setattr(instance, elem, validated_data[elem])
+		required_skills = validated_data.pop("skill", [])
+		instance = super(OfferSerializer, self).update(instance, validated_data)
 
-		for skill in required_skills_data:
-			if Skill.objects.filter(name__iexact=skill.name).exist():
-				instance.required_skills.add(skill)
+		instance.required_skills.clear()
+		instance.required_skills.add(*required_skills)
 
 		instance.save()
 

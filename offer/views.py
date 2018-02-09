@@ -17,11 +17,13 @@ class OfferRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
 	queryset = Offer.objects.all()
 
 	def update(self, request, *args, **kwargs):
-		offer_data = request.data.get('offer', {})
+		data = request.data.get('data', {})
+		offer_data = data.get('offer', {})
+		print(offer_data)
 		offer = Offer.objects.get(pk=kwargs["pk"])
 		serializer_data = {
 			'title': offer_data.get('title', offer.title),
-			'required_skills': offer_data.get('required_skills', offer.required_skills),
+			'required_skills_pk': offer_data.get('required_skills_pk', offer.required_skills),
 			'service_value': offer_data.get('service_value', offer.service_value),
 			'description': offer_data.get('description', offer.description),
 			'exp_date': offer_data.get('exp_date', offer.exp_date),
