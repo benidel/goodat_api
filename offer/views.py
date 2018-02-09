@@ -12,15 +12,16 @@ from .models import Offer
 
 class OfferRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
 	permission_classes = (IsAuthenticated,)
-	renderer_classes = (OfferJSONRenderer,)
+	# renderer_classes = (OfferJSONRenderer,)
 	serializer_class = OfferSerializer
 	queryset = Offer.objects.all()
 
 	def update(self, request, *args, **kwargs):
 		data = request.data.get('data', {})
 		offer_data = data.get('offer', {})
-		print(offer_data)
+		
 		offer = Offer.objects.get(pk=kwargs["pk"])
+
 		serializer_data = {
 			'title': offer_data.get('title', offer.title),
 			'required_skills_pk': offer_data.get('required_skills_pk', offer.required_skills),
@@ -38,14 +39,13 @@ class OfferRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ListCreateOfferAPIView(ListCreateAPIView):
+class OfferListCreateAPIView(ListCreateAPIView):
 	permission_classes = (IsAuthenticated,)
-	renderer_classes = (OfferJSONRenderer,)
+	# renderer_classes = (OfferJSONRenderer,)
 	serializer_class = OfferSerializer
 	queryset = Offer.objects.all()
 
 	def create(self, request, *args, **kwargs):
-		print("AAAA")
 		data = request.data.get('data', {})
 		offer = data.get('offer', {})
 		serializer = self.serializer_class(data=offer)

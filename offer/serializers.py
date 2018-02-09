@@ -29,7 +29,6 @@ class OfferSerializer(serializers.ModelSerializer):
 		)
 
 	def update(self, instance, validated_data):
-		print("DD", validated_data)
 		required_skills = validated_data.pop("skill", [])
 		instance = super(OfferSerializer, self).update(instance, validated_data)
 

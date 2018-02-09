@@ -8,16 +8,20 @@ class CoreJSONRenderer(JSONRenderer):
 	object_label = 'object'
 
 	def render(self, data, media_type=None, renderer_context=None):
-		errors = data.get('errors', None)
+		print("LALALA", data)
+		if data.get('results', None) is not None:
+			return json.dumps({
+				self.pagination_object_label: data['results'],
+				self.pagination_count_label: data['count']
+			})
 
-		if errors is not None:
-			return super(CoreJSONRenderer, self).render(data)
+		elif data.get('errors', None) is not None:
+			return super(ConduitJSONRenderer, self).render(data)
 
-		return json.dumps({
-			"data": {
+		else:
+			return json.dumps({
 				self.object_label: data
-			}
-		})
+			})
 
 # {
 # 	data:{
