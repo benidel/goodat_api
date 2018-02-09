@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 
     'core',
     'authentication',
-    'profiles'
+    'profiles',
+    'offer'
 ]
 
 

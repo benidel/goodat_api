@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from rest_framework import status
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +14,7 @@ class OfferRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
 	permission_classes = (IsAuthenticated,)
 	renderer_classes = (OfferJSONRenderer,)
 	serializer_class = OfferSerializer
+	queryset = Offer.objects.all()
 
 	def update(self, request, *args, **kwargs):
 		offer_data = request.data.get('offer', {})
@@ -34,17 +35,17 @@ class OfferRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
 
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
-	# def retrieve(self, request, offer_pk = None, *args, **kwargs):
-	# 	return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class RegisterOfferAPIView(APIView):
+class ListCreateOfferAPIView(ListCreateAPIView):
 	permission_classes = (IsAuthenticated,)
 	renderer_classes = (OfferJSONRenderer,)
 	serializer_class = OfferSerializer
+	queryset = Offer.objects.all()
 
-	def post(self, request):
-		offer = request.data.get('offer', {})
+	def create(self, request, *args, **kwargs):
+		print("AAAA")
+		data = request.data.get('data', {})
+		offer = data.get('offer', {})
 		serializer = self.serializer_class(data=offer)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
