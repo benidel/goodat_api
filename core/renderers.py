@@ -16,7 +16,7 @@ class CoreJSONRenderer(JSONRenderer):
 			})
 
 		elif data.get('errors', None) is not None:
-			return super(ConduitJSONRenderer, self).render(data)
+			return super(CoreJSONRenderer, self).render(data)
 
 		else:
 			return json.dumps({
